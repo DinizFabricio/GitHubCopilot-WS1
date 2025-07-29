@@ -1,0 +1,17 @@
+{
+  "name": "air-quality-checker",
+  "version": "1.0.0",
+  "description": "Verificador de Qualidade do Ar",
+  "main": "index.html",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.22.10",
+    "@testing-library/dom": "^9.3.1",
+    "@testing-library/jest-dom": "^6.0.0",
+    "jest": "^29.6.2",
+    "jest-environment-jsdom": "^29.6.2",
+    "whatwg-fetch": "^3.6.17"
+  }
+}

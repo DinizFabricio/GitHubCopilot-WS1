@@ -1,0 +1,1 @@
+Responda a todas as interações em português brasileiro.

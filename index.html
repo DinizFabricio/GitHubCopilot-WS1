@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificador da Qualidade do Ar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .error {
+            color: #ff0000;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+        .result-success {
+            background-color: #e8f5e9;
+            border: 1px solid #81c784;
+        }
+        .result-error {
+            background-color: #ffebee;
+            border: 1px solid #e57373;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+        }
+        .result-row {
+            margin: 10px 0;
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .result-row:last-child {
+            border-bottom: none;
+        }
+        .result-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .health-good { color: #4caf50; }
+        .health-moderate { color: #ff9800; }
+        .health-unhealthy { color: #f44336; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verificador da Qualidade do Ar</h1>
+        <form id="locationForm" onsubmit="return handleFormSubmit(event)">
+            <div class="form-group">
+                <label for="city">Cidade *</label>
+                <input type="text" id="city" name="city" required>
+                <div class="error" id="cityError">Por favor, insira uma cidade.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="state">Estado/Província/Região *</label>
+                <input type="text" id="state" name="state" required>
+                <div class="error" id="stateError">Por favor, insira um estado/província/região.</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="country">País (opcional - padrão: EUA)</label>
+                <input type="text" id="country" name="country">
+            </div>
+            
+            <button type="submit" id="submitBtn">Verificar Qualidade do Ar</button>
+        </form>
+        <div id="loading" class="loading">Buscando dados da qualidade do ar...</div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Função para validar o formulário
+        function validateForm() {
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            
+            document.getElementById('cityError').style.display = 'none';
+            document.getElementById('stateError').style.display = 'none';
+            
+            let isValid = true;
+            
+            if (!city) {
+                document.getElementById('cityError').style.display = 'block';
+                isValid = false;
+            }
+            if (!state) {
+                document.getElementById('stateError').style.display = 'block';
+                isValid = false;
+            }
+            
+            return isValid;
+        }
+
+        // Função para buscar coordenadas geográficas
+        async function getCoordinates(city, state, country) {
+            const query = `${city}, ${state}, ${country}`;
+            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`;
+            
+            const response = await fetch(url, {
+                headers: { 'Accept-Language': 'pt-BR' }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erro ao buscar coordenadas geográficas.');
+            }
+            
+            const data = await response.json();
+            if (!data || data.length === 0) {
+                throw new Error('Localização não encontrada.');
+            }
+            
+            return {
+                lat: data[0].lat,
+                lon: data[0].lon
+            };
+        }
+
+        // Função para buscar dados de qualidade do ar
+        async function getAirQuality(lat, lon) {
+            const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&hourly=us_aqi,pm10,pm2_5,carbon_monoxide,nitrogen_dioxide,sulphur_dioxide,ozone,dominant_pollutant`;
+            
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Erro ao buscar dados de qualidade do ar.');
+            }
+            
+            return await response.json();
+        }
+
+        // Função para determinar nível de saúde baseado no IQA
+        function getHealthLevel(aqi) {
+            if (aqi <= 50) return { level: 'good', text: 'Boa qualidade do ar' };
+            if (aqi <= 100) return { level: 'moderate', text: 'Qualidade do ar moderada' };
+            if (aqi <= 150) return { level: 'unhealthy', text: 'Insalubre para grupos sensíveis' };
+            if (aqi <= 200) return { level: 'unhealthy', text: 'Insalubre' };
+            if (aqi <= 300) return { level: 'unhealthy', text: 'Muito insalubre' };
+            return { level: 'unhealthy', text: 'Perigoso' };
+        }
+
+        // Função para formatar data/hora
+        function formatDateTime(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleString('pt-BR');
+        }
+
+        // Função para exibir resultados
+        function showResult(type, content) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = type === 'error' ? 'result-error' : 'result-success';
+            
+            if (type === 'error') {
+                resultDiv.innerHTML = `<div class="result-row">❌ ${content}</div>`;
+                return;
+            }
+            
+            const health = getHealthLevel(content.aqi);
+            resultDiv.innerHTML = `
+                <div class="result-row">
+                    <span class="result-label">Localização:</span> ${content.location}
+                </div>
+                <div class="result-row">
+                    <span class="result-label">IQA:</span> 
+                    <span class="health-${health.level}">${content.aqi} - ${health.text}</span>
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Poluente Principal:</span> ${content.pollutant}
+                </div>
+                <div class="result-row">
+                    <span class="result-label">Horário da Medição:</span> ${content.time}
+                </div>
+            `;
+        }
+
+        // Função principal para lidar com o envio do formulário
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+            
+            if (!validateForm()) {
+                return false;
+            }
+            
+            const city = document.getElementById('city').value.trim();
+            const state = document.getElementById('state').value.trim();
+            const country = document.getElementById('country').value.trim() || 'EUA';
+            
+            // Mostra loading e limpa resultado anterior
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('submitBtn').disabled = true;
+            
+            try {
+                // Busca coordenadas
+                const coords = await getCoordinates(city, state, country);
+                
+                // Busca dados de qualidade do ar
+                const airData = await getAirQuality(coords.lat, coords.lon);
+                
+                // Processa dados
+                const currentIndex = airData.hourly.time.length - 1;
+                const result = {
+                    location: `${city}, ${state}, ${country}`,
+                    aqi: airData.hourly.us_aqi[currentIndex],
+                    pollutant: airData.hourly.dominant_pollutant[currentIndex],
+                    time: formatDateTime(airData.hourly.time[currentIndex])
+                };
+                
+                showResult('success', result);
+            } catch (error) {
+                showResult('error', error.message);
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('submitBtn').disabled = false;
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
