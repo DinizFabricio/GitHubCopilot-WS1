@@ -1,11 +1,26 @@
 {
   "name": "air-quality-checker",
   "version": "1.0.0",
-  "description": "Verificador de Qualidade do Ar",
+  "description": "Aplicação web simples para verificar qualidade do ar - GitHub Copilot Workshop",
   "main": "index.html",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "npx http-server . -p 3000 -o",
+    "dev": "npx live-server --port=3000 --open=index.html"
   },
+  "keywords": [
+    "air-quality",
+    "web-app",
+    "javascript",
+    "html",
+    "css",
+    "github-copilot",
+    "workshop"
+  ],
+  "author": "GitHub Copilot Workshop",
+  "license": "MIT",
   "devDependencies": {
     "@babel/preset-env": "^7.22.10",
     "@testing-library/dom": "^9.3.1",
@@ -13,5 +28,13 @@
     "jest": "^29.6.2",
     "jest-environment-jsdom": "^29.6.2",
     "whatwg-fetch": "^3.6.17"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
