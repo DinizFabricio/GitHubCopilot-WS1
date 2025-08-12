@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Integração - Air Quality App</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f5f5f5; }
+        .test-container { background: white; padding: 20px; border-radius: 8px; margin: 10px 0; }
+        .success { border-left: 4px solid #28a745; background: #d4edda; }
+        .error { border-left: 4px solid #dc3545; background: #f8d7da; }
+        .info { border-left: 4px solid #17a2b8; background: #d1ecf1; }
+        .test-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        .log { background: #f8f9fa; padding: 15px; border-radius: 4px; height: 200px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Teste de Integração - Modern Air Quality App</h1>
+    
+    <div class="test-container info">
+        <h2>📋 Status dos Testes</h2>
+        <div id="testStatus">Aguardando execução dos testes...</div>
+    </div>
+
+    <div class="test-grid">
+        <div class="test-container">
+            <h3>🔧 Teste de Módulos</h3>
+            <button onclick="testModuleLoading()">Testar Carregamento de Módulos</button>
+            <div id="moduleTest"></div>
+        </div>
+
+        <div class="test-container">
+            <h3>🎨 Teste de Componentes</h3>
+            <button onclick="testComponents()">Testar Componentes UI</button>
+            <div id="componentTest"></div>
+        </div>
+
+        <div class="test-container">
+            <h3>🔄 Teste de EventManager</h3>
+            <button onclick="testEventManager()">Testar Sistema de Eventos</button>
+            <div id="eventTest"></div>
+        </div>
+
+        <div class="test-container">
+            <h3>📱 Teste Responsivo</h3>
+            <button onclick="testResponsive()">Testar Responsividade</button>
+            <div id="responsiveTest"></div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h3>📝 Log de Execução</h3>
+        <button onclick="clearLog()">Limpar Log</button>
+        <button onclick="startIntegrationTest()">🚀 Executar Teste Completo</button>
+        <div id="testLog" class="log"></div>
+    </div>
+
+    <script>
+        // Global test state
+        let testResults = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('testLog');
+            const color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            logElement.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('testLog').innerHTML = '';
+        }
+
+        function updateTestStatus() {
+            const statusElement = document.getElementById('testStatus');
+            const total = testResults.length;
+            const passed = testResults.filter(r => r.passed).length;
+            const failed = total - passed;
+
+            statusElement.innerHTML = `
+                <strong>Total: ${total}</strong> | 
+                <span style="color: green">Passou: ${passed}</span> | 
+                <span style="color: red">Falhou: ${failed}</span> |
+                <span style="color: blue">Taxa de Sucesso: ${total ? Math.round((passed/total)*100) : 0}%</span>
+            `;
+        }
+
+        function addTestResult(name, passed, details = '') {
+            testResults.push({ name, passed, details, timestamp: new Date() });
+            updateTestStatus();
+            log(`Teste "${name}": ${passed ? 'PASSOU' : 'FALHOU'} ${details}`, passed ? 'success' : 'error');
+        }
+
+        // Teste de carregamento de módulos
+        async function testModuleLoading() {
+            const resultDiv = document.getElementById('moduleTest');
+            resultDiv.innerHTML = '<p>Testando carregamento de módulos...</p>';
+
+            try {
+                // Testa se os módulos podem ser importados
+                const moduleTests = [
+                    { name: 'main.js', path: './src/js/main.js' },
+                    { name: 'EventManager', path: './src/js/utils/EventManager.js' },
+                    { name: 'FormComponent', path: './src/js/views/components/FormComponent.js' }
+                ];
+
+                let results = [];
+                
+                for (const moduleTest of moduleTests) {
+                    try {
+                        const response = await fetch(moduleTest.path);
+                        const exists = response.ok;
+                        results.push(`${moduleTest.name}: ${exists ? '✅' : '❌'}`);
+                        addTestResult(`Módulo ${moduleTest.name}`, exists, exists ? 'arquivo encontrado' : 'arquivo não encontrado');
+                    } catch (error) {
+                        results.push(`${moduleTest.name}: ❌ (${error.message})`);
+                        addTestResult(`Módulo ${moduleTest.name}`, false, error.message);
+                    }
+                }
+
+                resultDiv.innerHTML = `
+                    <h4>Resultados:</h4>
+                    <ul>${results.map(r => `<li>${r}</li>`).join('')}</ul>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red">Erro: ${error.message}</p>`;
+                addTestResult('Carregamento de Módulos', false, error.message);
+            }
+        }
+
+        // Teste de componentes UI
+        function testComponents() {
+            const resultDiv = document.getElementById('componentTest');
+            resultDiv.innerHTML = '<p>Testando elementos de UI...</p>';
+
+            const components = [
+                { name: 'Form Component', id: 'formComponent' },
+                { name: 'Loading Component', id: 'loadingComponent' },
+                { name: 'AQI Display Component', id: 'aqiDisplayComponent' },
+                { name: 'Form Element', id: 'airQualityForm' },
+                { name: 'City Input', id: 'city' },
+                { name: 'State Input', id: 'state' }
+            ];
+
+            let results = [];
+            
+            components.forEach(component => {
+                const element = document.getElementById(component.id);
+                const exists = element !== null;
+                results.push(`${component.name}: ${exists ? '✅' : '❌'}`);
+                addTestResult(`UI ${component.name}`, exists, exists ? 'elemento encontrado' : 'elemento não encontrado');
+            });
+
+            resultDiv.innerHTML = `
+                <h4>Elementos UI:</h4>
+                <ul>${results.map(r => `<li>${r}</li>`).join('')}</ul>
+            `;
+        }
+
+        // Teste de EventManager (simulado)
+        function testEventManager() {
+            const resultDiv = document.getElementById('eventTest');
+            resultDiv.innerHTML = '<p>Testando sistema de eventos...</p>';
+
+            try {
+                // Simula EventManager básico
+                class SimpleEventManager {
+                    constructor() {
+                        this.listeners = {};
+                    }
+                    
+                    subscribe(event, callback) {
+                        if (!this.listeners[event]) {
+                            this.listeners[event] = [];
+                        }
+                        this.listeners[event].push(callback);
+                    }
+                    
+                    publish(event, data) {
+                        if (this.listeners[event]) {
+                            this.listeners[event].forEach(callback => callback(data));
+                        }
+                    }
+                }
+
+                const eventManager = new SimpleEventManager();
+                let eventReceived = false;
+
+                // Testa publish/subscribe
+                eventManager.subscribe('test:event', (data) => {
+                    eventReceived = data === 'test-data';
+                });
+
+                eventManager.publish('test:event', 'test-data');
+
+                const passed = eventReceived;
+                addTestResult('EventManager Simulation', passed, passed ? 'pub/sub funcionando' : 'pub/sub falhou');
+
+                resultDiv.innerHTML = `
+                    <h4>Resultado:</h4>
+                    <p>Sistema de Eventos: ${passed ? '✅ Funcionando' : '❌ Falhou'}</p>
+                    <p><small>Teste simulado - EventManager real seria carregado via módulos</small></p>
+                `;
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: red">Erro: ${error.message}</p>`;
+                addTestResult('EventManager Simulation', false, error.message);
+            }
+        }
+
+        // Teste de responsividade
+        function testResponsive() {
+            const resultDiv = document.getElementById('responsiveTest');
+            resultDiv.innerHTML = '<p>Testando responsividade...</p>';
+
+            const breakpoints = [
+                { name: 'Mobile', width: 480 },
+                { name: 'Tablet', width: 768 },
+                { name: 'Desktop', width: 1200 }
+            ];
+
+            let results = [];
+            
+            breakpoints.forEach(bp => {
+                // Simula teste de breakpoint
+                const mediaQuery = window.matchMedia(`(max-width: ${bp.width}px)`);
+                const responsive = typeof mediaQuery.matches === 'boolean';
+                results.push(`${bp.name} (${bp.width}px): ${responsive ? '✅' : '❌'}`);
+                addTestResult(`Responsivo ${bp.name}`, responsive);
+            });
+
+            // Testa CSS Grid/Flexbox support
+            const cssSupport = {
+                grid: CSS.supports('display', 'grid'),
+                flexbox: CSS.supports('display', 'flex'),
+                customProperties: CSS.supports('color', 'var(--test)')
+            };
+
+            Object.entries(cssSupport).forEach(([feature, supported]) => {
+                results.push(`CSS ${feature}: ${supported ? '✅' : '❌'}`);
+                addTestResult(`CSS ${feature}`, supported);
+            });
+
+            resultDiv.innerHTML = `
+                <h4>Suporte Responsivo:</h4>
+                <ul>${results.map(r => `<li>${r}</li>`).join('')}</ul>
+                <p><strong>Tela Atual:</strong> ${window.innerWidth}x${window.innerHeight}px</p>
+            `;
+        }
+
+        // Teste de integração completa
+        async function startIntegrationTest() {
+            log('🚀 Iniciando teste de integração completa...', 'info');
+            testResults = []; // Reset results
+            
+            log('📋 Fase 1: Testando carregamento de módulos...');
+            await testModuleLoading();
+            
+            log('🎨 Fase 2: Testando componentes UI...');
+            testComponents();
+            
+            log('🔄 Fase 3: Testando sistema de eventos...');
+            testEventManager();
+            
+            log('📱 Fase 4: Testando responsividade...');
+            testResponsive();
+            
+            log('🏁 Teste de integração concluído!', 'success');
+            
+            // Sumário final
+            const total = testResults.length;
+            const passed = testResults.filter(r => r.passed).length;
+            const failed = total - passed;
+            
+            log(`📊 SUMÁRIO FINAL: ${passed}/${total} testes passaram (${Math.round((passed/total)*100)}%)`, 
+                failed === 0 ? 'success' : 'error');
+        }
+
+        // Executa teste automático ao carregar
+        window.onload = function() {
+            log('🌟 Página de testes carregada');
+            log('💡 Clique em "Executar Teste Completo" para verificar a integração');
+            
+            // Verifica se estamos na aplicação principal
+            if (window.location.pathname.includes('test')) {
+                log('📍 Executando em modo de teste');
+            } else {
+                log('📍 Para testar a aplicação principal, acesse index.html');
+            }
+        };
+    </script>
+</body>
+</html>

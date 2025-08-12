@@ -23,6 +23,78 @@ body {
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
+/* Novo Container da App */
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Header da App */
+.app-header {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.app-header h1 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 2.5rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.app-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    font-weight: 300;
+    margin: 0;
+}
+
+/* Seções da App */
+.form-section,
+.loading-section,
+.results-section {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+}
+
+.form-section {
+    padding: 30px;
+}
+
+.loading-section {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.results-section {
+    padding: 30px;
+}
+
+/* Componentes */
+.form-component,
+.loading-component,
+.aqi-display-component {
+    width: 100%;
+}
+
 /* Título */
 h1 {
     text-align: center;
@@ -427,6 +499,435 @@ input[type="text"]::placeholder {
     }
 }
 
+/* ==========================================
+   ESTILOS PARA NOVA ARQUITETURA MODULAR
+   ========================================== */
+
+/* Componente AQI Display */
+.aqi-display-component {
+    display: none;
+}
+
+.aqi-display-component.has-data {
+    display: block;
+}
+
+.aqi-placeholder {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.aqi-placeholder h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.aqi-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.aqi-title {
+    font-size: 1.5rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.aqi-location {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.aqi-timestamp {
+    color: #888;
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.aqi-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    padding: 30px;
+    margin-bottom: 30px;
+    border-radius: 12px;
+    background: #f8f9fa;
+}
+
+.aqi-summary.good { background: linear-gradient(135deg, #e8f5e8, #f0fff0); }
+.aqi-summary.moderate { background: linear-gradient(135deg, #fff8e1, #fffde7); }
+.aqi-summary.unhealthy-sensitive { background: linear-gradient(135deg, #ffeaa7, #fdcb6e); }
+.aqi-summary.unhealthy { background: linear-gradient(135deg, #ffbab6, #ff7675); }
+.aqi-summary.very-unhealthy { background: linear-gradient(135deg, #e4c1f9, #d63384); }
+.aqi-summary.hazardous { background: linear-gradient(135deg, #f8d7da, #dc3545); }
+
+.aqi-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #333;
+    line-height: 1;
+}
+
+.aqi-label {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.aqi-category {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.dominant-pollutant {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* Poluentes */
+.pollutants-title {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pollutants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.pollutant-card {
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.pollutant-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #667eea;
+}
+
+.pollutant-card.selected {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
+
+.pollutant-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.pollutant-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 2px;
+}
+
+.pollutant-unit {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.pollutant-status {
+    font-size: 0.8rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+.pollutant-status.bom {
+    background: #d4edda;
+    color: #155724;
+}
+
+.pollutant-status.moderado {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.pollutant-status.ruim {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.pollutant-status.péssimo {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+/* Recomendações */
+.recommendations-title {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.recommendations-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recommendation-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 15px;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.recommendation-item.good {
+    background: #d4edda;
+    border-left: 4px solid #28a745;
+}
+
+.recommendation-item.moderate {
+    background: #fff3cd;
+    border-left: 4px solid #ffc107;
+}
+
+.recommendation-item.unhealthy {
+    background: #f8d7da;
+    border-left: 4px solid #dc3545;
+}
+
+.recommendation-item.hazardous {
+    background: #f5c6cb;
+    border-left: 4px solid #721c24;
+}
+
+.recommendation-icon {
+    font-size: 1.2rem;
+    min-width: 20px;
+    text-align: center;
+}
+
+.recommendation-text {
+    font-size: 0.9rem;
+    color: #333;
+    line-height: 1.4;
+}
+
+/* Gráfico Simples */
+.chart-title {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.simple-chart {
+    display: flex;
+    align-items: end;
+    justify-content: center;
+    gap: 4px;
+    height: 100px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.chart-bar {
+    min-width: 12px;
+    border-radius: 2px 2px 0 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.chart-bar:hover {
+    opacity: 0.8;
+    transform: scaleY(1.05);
+}
+
+.chart-message {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px;
+}
+
+/* Footer do Display */
+.aqi-footer {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.data-source {
+    font-size: 0.8rem;
+    color: #666;
+    margin: 0;
+}
+
+.display-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.refresh-button,
+.export-button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.refresh-button:hover,
+.export-button:hover {
+    background: #5a67d8;
+}
+
+/* Estados de Error */
+.aqi-display-component.error {
+    display: block;
+}
+
+.error-message {
+    text-align: center;
+    padding: 40px;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    color: #721c24;
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.error-message h3 {
+    margin-bottom: 10px;
+    color: #721c24;
+}
+
+.retry-button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+.retry-button:hover {
+    background: #c82333;
+}
+
+/* Componente de Loading já tem CSS próprio injetado */
+
+/* Mensagens de Status (compatibilidade) */
+.status-messages {
+    display: none !important;
+}
+
+/* Responsividade para Nova Arquitetura */
+@media (max-width: 768px) {
+    .app-container {
+        padding: 15px;
+        gap: 20px;
+    }
+    
+    .app-header {
+        padding: 20px;
+    }
+    
+    .app-header h1 {
+        font-size: 2rem;
+    }
+    
+    .aqi-summary {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .aqi-value {
+        font-size: 2.5rem;
+    }
+    
+    .pollutants-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .aqi-footer {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .simple-chart {
+        height: 80px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .aqi-value {
+        font-size: 2rem;
+    }
+    
+    .form-section,
+    .loading-section,
+    .results-section {
+        padding: 20px;
+    }
+}
+
+/* Animações de Componente */
+.aqi-display-component {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.loading-component {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsividade */
 @media (max-width: 600px) {
     body {
@@ -516,5 +1017,18 @@ input[type="text"]:hover {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+    }
+    
+    .aqi-display-component,
+    .loading-component {
+        animation: none;
+    }
+    
+    .chart-bar:hover {
+        transform: none;
+    }
+    
+    .pollutant-card:hover {
+        transform: none;
     }
 }

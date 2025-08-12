@@ -1,8 +1,8 @@
 {
   "name": "air-quality-checker",
-  "version": "1.0.0",
-  "description": "Aplicação web simples para verificar qualidade do ar - GitHub Copilot Workshop",
-  "main": "index.html",
+  "version": "2.0.0",
+  "description": "Aplicação web moderna com arquitetura enterprise para verificar qualidade do ar - GitHub Copilot Workshop",
+  "main": "src/js/main.js",
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -17,7 +17,11 @@
     "html",
     "css",
     "github-copilot",
-    "workshop"
+    "workshop",
+    "enterprise-architecture",
+    "design-patterns",
+    "modular",
+    "responsive"
   ],
   "author": "GitHub Copilot Workshop",
   "license": "MIT",

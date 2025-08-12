@@ -9,73 +9,98 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Verificador da Qualidade do Ar</h1>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>🌬️ Verificador da Qualidade do Ar</h1>
+            <p class="app-subtitle">Monitor em tempo real da qualidade do ar ao redor do mundo</p>
+        </header>
         
-        <form id="airQualityForm" novalidate>
-            <div class="form-group">
-                <label for="city">
-                    Cidade <span class="required">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    id="city" 
-                    name="city" 
-                    placeholder="Ex: São Paulo, Nova York, Londres"
-                    required
-                >
-                <div class="error-message" id="cityError">
-                    Por favor, informe o nome da cidade.
-                </div>
+        <!-- Componente de Formulário -->
+        <section class="form-section">
+            <div id="formComponent" class="form-component">
+                <form id="airQualityForm" novalidate>
+                    <div class="form-group">
+                        <label for="city">
+                            Cidade <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="city" 
+                            name="city" 
+                            placeholder="Ex: São Paulo, Nova York, Londres"
+                            required
+                            aria-describedby="cityError"
+                        >
+                        <div class="error-message" id="cityError" aria-live="polite">
+                            Por favor, informe o nome da cidade.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="state">
+                            Estado/Província/Região <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="state" 
+                            name="state" 
+                            placeholder="Ex: SP, NY, California, Ontario"
+                            required
+                            aria-describedby="stateError"
+                        >
+                        <div class="error-message" id="stateError" aria-live="polite">
+                            Por favor, informe o estado/província/região.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="country">
+                            País (opcional)
+                        </label>
+                        <input 
+                            type="text" 
+                            id="country" 
+                            name="country" 
+                            placeholder="Ex: Brasil, EUA, Canadá"
+                            aria-describedby="countryError"
+                        >
+                        <div class="error-message" id="countryError" aria-live="polite"></div>
+                        <div class="help-text">
+                            Se não informado, será assumido "EUA" como país padrão.
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn" id="submitButton">
+                        Verificar Qualidade do Ar
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Componente de Loading -->
+        <section class="loading-section">
+            <div id="loadingComponent" class="loading-component" style="display: none;"></div>
+        </section>
+
+        <!-- Componente de Display AQI -->
+        <section class="results-section">
+            <div id="aqiDisplayComponent" class="aqi-display-component" style="display: none;"></div>
+        </section>
+
+        <!-- Mensagens de Status (mantidas para compatibilidade) -->
+        <div class="status-messages" style="display: none;">
+            <div class="success-message" id="successMessage">
+                <strong>✅ Formulário enviado com sucesso!</strong>
+                <span id="locationDisplay"></span>
             </div>
 
-            <div class="form-group">
-                <label for="state">
-                    Estado/Província/Região <span class="required">*</span>
-                </label>
-                <input 
-                    type="text" 
-                    id="state" 
-                    name="state" 
-                    placeholder="Ex: SP, NY, California, Ontario"
-                    required
-                >
-                <div class="error-message" id="stateError">
-                    Por favor, informe o estado/província/região.
-                </div>
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Buscando dados da qualidade do ar...</p>
             </div>
-
-            <div class="form-group">
-                <label for="country">
-                    País (opcional)
-                </label>
-                <input 
-                    type="text" 
-                    id="country" 
-                    name="country" 
-                    placeholder="Ex: Brasil, EUA, Canadá"
-                >
-                <div class="help-text">
-                    Se não informado, será assumido "EUA" como país padrão.
-                </div>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submitButton">
-                Verificar Qualidade do Ar
-            </button>
-        </form>
-
-        <div class="success-message" id="successMessage">
-            <strong>✅ Formulário enviado com sucesso!</strong>
-            <span id="locationDisplay"></span>
-        </div>
-
-        <div class="loading" id="loading">
-            <div class="loading-spinner"></div>
-            <p>Buscando dados da qualidade do ar...</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="src/js/main.js"></script>
 </body>
 </html>
